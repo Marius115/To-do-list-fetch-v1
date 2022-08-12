@@ -17,7 +17,7 @@ const Home = () => {
 		setTask({ ...task, [e.target.name]: e.target.value });
 	}
 
-
+// Metodo PUT
 	async function addTask(event) {
 		if (event.key === "Enter") {
 			if (task.label.trim() !== "") {
@@ -36,8 +36,8 @@ const Home = () => {
 		}
 	}
 	
-
-	//traer tareas
+	
+//Metodo Post
 	async function getTask() {
 		try {
 			let response = await fetch(`${baseUrl}/mariano`);
@@ -63,15 +63,33 @@ const Home = () => {
 			console.log(error);
 		}
 	}
+
+// DELETE!
+	async function deleteTask(id) {
+		let newTask = todos.filter((ta, index) => id !== index);
+
+		let response = await fetch(`${baseUrl}/mariano`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(newTask),
+		});
+		if (response.ok) {
+			getTask();
+		}
+		setTodos(newTask);
+	}
+
 	useEffect(() => {
 		getTask();
 	}, []);
 
 	return (
 		<div className="container">
-			<div className="row justify-content-center">
+			<div className="row d-flex justify-content-center p-3">
 				<div className="col-12 col-md-6">
-					<h1 className="text-center"> ToDo List Fetch</h1>
+					<h1 className="text-center fw-light opacity-25 my-3"> ToDo List Fetch</h1>
 					<form
 						onSubmit={(event) => {
 							event.preventDefault();
@@ -88,15 +106,18 @@ const Home = () => {
 						/>
 					</form>
 					{todos.length > 0 ? (
-						<p> tienes {todos.length} tareas restantes</p>
+						<p 
+						className="text-muted"> tienes {todos.length} tareas restantes</p>
 					) : (
-						<p>No tienes tareas pendientes.</p>
+						<p
+						className="text-black-50"
+						>No tienes tareas pendientes.</p>
 					)}
-					{/* //operador */}
+					{/*//operador*/}
 					<ul>
 						{todos.map((ta, index) => {
 							return (
-								<li
+								<li className="text-muted"
 									key={index}
 									onClick={() => {
 										deleteTask(index);
